@@ -1,0 +1,89 @@
+# Laravel & Framework
+/node_modules
+/public/hot
+/public/build
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.*
+!.env.example
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
+# Livewire
+/storage/framework/livewire-tmp
+/storage/framework/livewire-uploads
+
+# Laravel Storage
+/storage/app/public/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+/storage/pail
+
+# Build files
+/public/css
+/public/js
+/public/mix-manifest.json
+/public/robots.txt
+/public/sitemap*.xml
+
+# IDE & Editors
+/.idea
+/.vscode
+/.vagrant
+/.fleet
+/.nova
+/.zed
+.phpactor.json
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+.project
+.buildpath
+.settings
+
+# Cache and Logs
+.php_cs.cache
+.php-cs-fixer.cache
+.phpstorm.meta.php
+_ide_*.php
+*.cache
+*.log
+
+# OS Generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Testing
+.phpunit.cache/
+.coverage
+coverage.xml
+phpunit.xml
+.phpunit.cache
+
+# Dependencies
+composer.phar
+package-lock.json
+yarn.lock
+
+# Application Specific
+/storage/app/backups
+/storage/debugbar
+.serverless
+node_modules
+dist
+build
