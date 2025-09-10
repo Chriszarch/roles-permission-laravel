@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
     ];
 
     /**
@@ -43,6 +45,55 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
+
+    // ==============================================
+    // RELATIONSHIPS
+    // ==============================================
+
+    /**
+     * Get the roles for the user.
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Role::class,
+            'user_roles',
+            'user_id',
+            'role_id'
+        )->withTimestamps();
+    }
+
+    // ==============================================
+    // MÉTODOS BÁSICOS PARA ROLES Y PERMISOS
+    // ==============================================
+
+    /**
+     * Verificar si el usuario tiene un rol específico
+     */
+    public function hasRole(string $roleName): bool
+    {
+        return $this->roles()->where('name', $roleName)->exists();
+    }
+
+    /**
+     * Verificar si el usuario puede realizar una acción
+     */
+    public function can($ability, $arguments = []): bool
+    {
+        // Si es admin, puede todo
+        if ($this->hasRole('admin')) {
+            return true;
+        }
+
+        // Verificar permiso específico
+        return $this->roles()
+            ->whereHas('permissions', function ($query) use ($ability) {
+                $query->where('permission_key', $ability);
+            })
+            ->exists();
+    }
+
 }
