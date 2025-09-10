@@ -4,13 +4,16 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Users extends Component
 {
+    use AuthorizesRequests;
+
     public $headers = [];
     public $users = [];
     public $title = 'Usuarios';
-    
+
     // Variables para el modal de edición
     public $showEditModal = false;
     public $editingUser = null;
@@ -40,18 +43,19 @@ class Users extends Component
 
     public function edit($userId)
     {
-        $this->editingUser = User::find($userId);
-        
-        if ($this->editingUser) {
-            $this->name = $this->editingUser->name;
-            $this->email = $this->editingUser->email;
-            $this->is_active = $this->editingUser->is_active;
-            $this->showEditModal = true;
-        }
+        $user = User::findOrFail($userId);
+        $this->authorize('update', $user);
+
+        $this->editingUser = $user;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->is_active = $user->is_active;
+        $this->showEditModal = true;
     }
 
     public function save()
     {
+        $this->authorize('update', $this->editingUser);
         $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->editingUser->id,
@@ -80,25 +84,25 @@ class Users extends Component
 
     public function delete($userId)
     {
-        $user = User::find($userId);
-        
+        $user = User::findOrFail($userId);
+
+        $this->authorize('deactivate', $user);
         if ($user) {
             // Cambiar el estado en lugar de eliminar
             $user->update(['is_active' => 0]);
             $this->loadUsers();
-            $this->dispatch('user-deactivated', 'Usuario desactivado correctamente');
+            $this->dispatch('user-edit', 'Usuario desactivado correctamente');
         }
     }
 
     public function activate($userId)
     {
-        $user = User::find($userId);
-        
-        if ($user) {
-            $user->update(['is_active' => 1]);
-            $this->loadUsers();
-            $this->dispatch('user-activated', 'Usuario activado correctamente');
-        }
+        $user = User::findOrFail($userId);
+        $this->authorize('update', $user);
+
+        $user->update(['is_active' => 1]);
+        $this->loadUsers();
+        $this->dispatch('user-activated', 'Usuario activado correctamente');
     }
 
     public function render()

@@ -19,9 +19,14 @@ class Login extends Component
             'password' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        // Only allow login for active accounts
+        if (Auth::attempt([
+            'email' => $this->email,
+            'password' => $this->password,
+            'is_active' => 1,
+        ], $this->remember)) {
             session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended(route('dashboard'));
         }
 
         $this->addError('email', 'Las credenciales no coinciden con nuestros registros.');

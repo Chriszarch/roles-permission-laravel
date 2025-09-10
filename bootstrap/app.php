@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Middleware para verificar usuarios activos en todas las rutas web autenticadas
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckActiveUser::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
