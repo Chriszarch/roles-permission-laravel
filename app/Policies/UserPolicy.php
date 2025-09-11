@@ -7,6 +7,11 @@ use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
+    public function view(User $authUser): bool
+    {
+        return $authUser->can('users.view');
+    }
+
     public function update(User $authUser, User $targetUser): bool
     {
         // Ejemplo: solo si tiene permiso específico

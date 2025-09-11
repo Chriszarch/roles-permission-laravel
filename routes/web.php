@@ -10,7 +10,10 @@ Route::get('/login', Login::class)->name('login')->middleware('guest');
 
 Route::middleware('auth')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
-    Route::get('/users', App\Livewire\Users::class)->name('users');
+
+    Route::get('/users', App\Livewire\Users::class)
+        ->can('view', App\Models\User::class)
+        ->name('users');
 });
 
 Route::get('/logout', function () {
