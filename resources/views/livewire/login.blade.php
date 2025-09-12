@@ -11,9 +11,8 @@
 
             <!-- Logo/Brand -->
             <div class="text-center space-y-2 relative">
-                <div
-                    class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary-500 to-indigo-500 shadow-lg shadow-primary-500/20 mb-4 ring-4 ring-white">
-                    <x-icon name="o-finger-print" class="w-8 h-8 text-white" />
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-lg mb-4 ring-4 ring-gray-100">
+                    <img src="{{ asset('storage/logo-base.png') }}" alt="Logo" class="w-12 h-12">
                 </div>
                 <h2 class="text-2xl font-bold tracking-tight text-gray-900">Bienvenido de nuevo</h2>
                 <p class="text-gray-600 text-sm">Inicia sesión para acceder a tu cuenta</p>

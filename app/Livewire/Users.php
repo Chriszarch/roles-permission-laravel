@@ -2,10 +2,12 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+#[Title('Usuarios')]
 class Users extends Component
 {
     use AuthorizesRequests;
@@ -104,6 +106,7 @@ class Users extends Component
         $this->loadUsers();
         $this->dispatch('user-activated', 'Usuario activado correctamente');
     }
+
 
     public function render()
     {

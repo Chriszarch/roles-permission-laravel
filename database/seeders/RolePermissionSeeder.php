@@ -84,13 +84,13 @@ class RolePermissionSeeder extends Seeder
         $adminUser->roles()->attach($adminRole->id);
 
         // Asignar rol user al usuario test existente
-        $testUser = User::where('email', 'test@test.com')->first();
+        $testUser = User::where('email', 'cristian.bello@ocracode.com')->first();
         if ($testUser) {
             $testUser->roles()->attach($userRole->id);
         }
 
         echo "✅ Roles y permisos creados exitosamente!\n";
         echo "👤 Admin: admin@test.com (password: password)\n";
-        echo "👤 User: test@test.com (password: password)\n";
+        echo "👤 User: cristian.bello@ocracode.com (password: password)\n";
     }
 }

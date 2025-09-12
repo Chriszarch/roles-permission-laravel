@@ -15,9 +15,9 @@ class TestUserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Chris Bello',
-            'email' => 'chrisbello@ocracode.com',
-            'password' => Hash::make('password2'),
+            'name' => 'Cristian Bello',
+            'email' => 'cristian.bello@ocracode.com',
+            'password' => Hash::make('password'),
         ]);
     }
 }

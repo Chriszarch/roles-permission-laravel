@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
+    <title>{{ $title ?? config('app.name') }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -50,7 +50,7 @@
                     <x-menu-separator />
                 @endif
 
-                <x-menu-item title="Hello" icon="o-sparkles" link="/" />
+                <x-menu-item title="Dashboard" icon="o-chart-pie" link="/" />
 
                 {{-- MENÚ CON CONTROL DE PERMISOS --}}
                 @if (auth()->user()?->can('users.view'))
@@ -72,8 +72,7 @@
         {{-- The `$slot` goes here --}}
         <x-slot:content>
             <!-- HEADER -->
-            <x-header title="{{ $title ?? 'Dashboard' }}" icon="o-bolt"
-                icon-classes="bg-warning rounded-full p-1 w-6 h-6" separator />
+            <x-header title="{{ $title ?? 'Dashboard' }}" separator />
 
             {{ $slot }}
         </x-slot:content>
