@@ -14,6 +14,8 @@ return new class extends Migration
             $table->string('action');
             $table->string('permission_key')->unique();
             $table->timestamps();
+
+            $table->engine = 'InnoDB';
         });
     }
 

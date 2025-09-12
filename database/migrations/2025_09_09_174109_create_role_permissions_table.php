@@ -12,8 +12,10 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
+
             $table->primary(['role_id', 'permission_id']);
+
+            $table->engine = 'InnoDB';
         });
     }
 
