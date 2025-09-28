@@ -47,6 +47,15 @@
                 type="email" />
         </div>
 
+        @can('roles-edit', App\Models\User::class)
+            {{-- Asignar roles --}}
+            <div class="mt-4">
+                <h3 class="font-semibold mb-2">Asignar Roles</h3>
+                <x-select label="Roles" :options="$roles" :options="$roles" place-holder-value="0"/>
+            </div>  
+            
+        @endcan
+
         {{-- Botones del modal --}}
         <x-slot:actions>
             <x-button label="Cancelar" wire:click="cancelEdit" />

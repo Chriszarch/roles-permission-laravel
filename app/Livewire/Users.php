@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 #[Title('Usuarios')]
@@ -14,6 +15,7 @@ class Users extends Component
 
     public $headers = [];
     public $users = [];
+    public $userRoles = [];
     public $title = 'Usuarios';
 
     // Variables para el modal de edición
@@ -38,7 +40,6 @@ class Users extends Component
     {
         $this->users = User::all();
     }
-
     // ==============================================
     // MÉTODOS DE EDICIÓN
     // ==============================================

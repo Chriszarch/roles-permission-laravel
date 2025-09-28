@@ -114,6 +114,16 @@ class Role extends Model
         return $query->where('name', $name);
     }
 
+    /**
+     * Get all roles
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAllRoles()
+    {
+        return $this->all();
+    }
+
     // ==============================================
     // HELPER METHODS
     // ==============================================

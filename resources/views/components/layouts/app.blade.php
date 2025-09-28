@@ -30,7 +30,9 @@
         <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 lg:bg-inherit">
 
             {{-- BRAND --}}
-            <x-app-brand class="px-5 pt-4" />
+            <div class="flex items-center justify-center -mb-8">
+            <img src="{{ asset('storage/horizontal-logo.webp') }}" alt="Logo" class="px-5 pt-4 h-14 md:h-32 object-contain">
+            </div>
 
             {{-- MENU --}}
             <x-menu activate-by-route>
