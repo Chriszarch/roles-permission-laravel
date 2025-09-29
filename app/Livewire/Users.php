@@ -2,20 +2,21 @@
 
 namespace App\Livewire;
 
+use App\Models\Role;
+use Mary\Traits\Toast;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 #[Title('Usuarios')]
 class Users extends Component
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, Toast;
 
     public $headers = [];
     public $users = [];
-    public $userRoles = [];
+    public $roles = [];
     public $title = 'Usuarios';
 
     // Variables para el modal de edición
@@ -23,6 +24,7 @@ class Users extends Component
     public $editingUser = null;
     public $name = '';
     public $email = '';
+    public $selectedRoles = [];
     public $is_active = true;
 
     public function mount()
@@ -40,13 +42,15 @@ class Users extends Component
     {
         $this->users = User::all();
     }
-    // ==============================================
-    // MÉTODOS DE EDICIÓN
-    // ==============================================
 
     public function edit($userId)
     {
         $user = User::findOrFail($userId);
+        $roles = Role::all();
+        $userRoleIds = $user->roles->pluck('id')->toArray();
+
+        $this->roles = $roles;
+        $this->selectedRoles = $userRoleIds;
         $this->authorize('update', $user);
 
         $this->editingUser = $user;
@@ -58,21 +62,35 @@ class Users extends Component
 
     public function save()
     {
-        $this->authorize('update', $this->editingUser);
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->editingUser->id,
-        ]);
+        try {
+            $this->authorize('update', $this->editingUser);
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $this->editingUser->id,
+            ]);
 
-        $this->editingUser->update([
-            'name' => $this->name,
-            'email' => $this->email,
-            'is_active' => $this->is_active,
-        ]);
+            $this->editingUser->update([
+                'name' => $this->name,
+                'email' => $this->email,
+                'is_active' => $this->is_active,
+            ]);
 
-        $this->showEditModal = false;
-        $this->loadUsers();
-        $this->dispatch('user-updated', 'Usuario actualizado correctamente');
+            if (!empty($this->selectedRoles)) {
+                $this->editingUser->roles()->sync($this->selectedRoles);
+            }else{
+                $this->error('Error', 'Debe asignar al menos un rol al usuario', position: 'toast-top toast-end');
+                return;
+            }
+
+            $this->showEditModal = false;
+            $this->loadUsers();
+            $this->success('Usuario actualizado', 'El usuario ha sido actualizado correctamente', position: 'toast-top toast-end');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->error('Error de validación', 'Por favor, revisa los datos ingresados', position: 'toast-top toast-end');
+            throw $e;
+        } catch (\Exception $e) {
+            $this->error('Error', 'No se pudo actualizar el usuario. Inténtalo de nuevo.', position: 'toast-top toast-end');
+        }
     }
 
     public function cancelEdit()
@@ -94,7 +112,7 @@ class Users extends Component
             // Cambiar el estado en lugar de eliminar
             $user->update(['is_active' => 0]);
             $this->loadUsers();
-            $this->dispatch('user-edit', 'Usuario desactivado correctamente');
+            $this->warning('Usuario desactivado', 'El usuario ha sido desactivado correctamente', position: 'toast-top toast-end');
         }
     }
 
@@ -105,9 +123,8 @@ class Users extends Component
 
         $user->update(['is_active' => 1]);
         $this->loadUsers();
-        $this->dispatch('user-activated', 'Usuario activado correctamente');
+        $this->success('Usuario activado', 'El usuario ha sido activado correctamente', position: 'toast-top toast-end');
     }
-
 
     public function render()
     {
