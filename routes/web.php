@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\QrCodeController;
 use App\Livewire\Dashboard;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use App\Livewire\Login;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
+Route::get('/r/{qrCode:uuid}', [QrCodeController::class, 'redirect'])->name('qr.redirect');
+
+Route::middleware('auth')->get('/qr-codes/{qrCode:uuid}/download', [QrCodeController::class, 'download'])->name('qr.download');
 
 Route::get('/login', Login::class)->name('login')->middleware('guest');
 
