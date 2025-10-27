@@ -8,6 +8,21 @@
     <title>{{ $title ?? config('app.name') }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&loading=async&callback=initGoogleMaps"
+        async defer></script>
+
+    @if (Route::currentRouteName() == 'google-places')
+        <script>
+            function initGoogleMaps() {
+                // Este callback se ejecuta cuando Google Maps JS está listo.
+                // No hacemos nada aquí si inicializamos desde Alpine con x-init.
+                // Pero la existencia de esta función evita errores si usas callback param.
+            }
+        </script>
+    @endif
+
+
 </head>
 
 <body class="min-h-screen font-sans antialiased bg-base-200">
@@ -31,7 +46,8 @@
 
             {{-- BRAND --}}
             <div class="flex items-center justify-center -mb-8">
-            <img src="{{ asset('storage/horizontal-logo.webp') }}" alt="Logo" class="px-5 pt-4 h-14 md:h-32 object-contain">
+                <img src="{{ asset('storage/horizontal-logo.webp') }}" alt="Logo"
+                    class="px-5 pt-4 h-14 md:h-32 object-contain">
             </div>
 
             {{-- MENU --}}
@@ -55,9 +71,15 @@
                 <x-menu-item title="Dashboard" icon="o-chart-pie" link="/" />
 
                 {{-- MENÚ CON CONTROL DE PERMISOS --}}
-                @if (auth()->user()?->can('users.view'))
+                @can('users.view')
                     <x-menu-item title="Users" icon="o-users" link="/users" />
-                @endif
+                @endcan
+
+                @can('qr.view')
+                    <x-menu-item title="QR Codes" icon="o-qr-code" link="/qr-codes" />
+                @endcan
+
+                <x-menu-item title="Links de Reseñas" icon="o-map-pin" link="/google-places" />
 
                 {{-- Solo admin puede ver configuraciones --}}
                 @if (auth()->user()?->hasRole('admin'))

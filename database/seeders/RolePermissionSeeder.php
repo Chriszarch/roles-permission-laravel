@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -15,12 +15,17 @@ class RolePermissionSeeder extends Seeder
         // Crear módulos
         $userModule = Module::create([
             'name' => 'users',
-            'description' => 'Gestión de usuarios'
+            'description' => 'Gestión de usuarios',
         ]);
-        
+
         $roleModule = Module::create([
             'name' => 'roles',
-            'description' => 'Gestión de roles y permisos'
+            'description' => 'Gestión de roles y permisos',
+        ]);
+
+        $qrModule = Module::create([
+            'name' => 'qr',
+            'description' => 'Gestión de códigos QR',
         ]);
 
         // Crear permisos para el módulo de usuarios
@@ -35,7 +40,7 @@ class RolePermissionSeeder extends Seeder
             Permission::create([
                 'module_id' => $userModule->id,
                 'action' => $perm['action'],
-                'permission_key' => $perm['permission_key']
+                'permission_key' => $perm['permission_key'],
             ]);
         }
 
@@ -51,19 +56,35 @@ class RolePermissionSeeder extends Seeder
             Permission::create([
                 'module_id' => $roleModule->id,
                 'action' => $perm['action'],
-                'permission_key' => $perm['permission_key']
+                'permission_key' => $perm['permission_key'],
+            ]);
+        }
+
+        // Crear permisos para el módulo de QR
+        $qrPermissions = [
+            ['action' => 'view', 'permission_key' => 'qr.view'],
+            ['action' => 'create', 'permission_key' => 'qr.create'],
+            ['action' => 'edit', 'permission_key' => 'qr.edit'],
+            ['action' => 'delete', 'permission_key' => 'qr.delete'],
+        ];
+
+        foreach ($qrPermissions as $perm) {
+            Permission::create([
+                'module_id' => $qrModule->id,
+                'action' => $perm['action'],
+                'permission_key' => $perm['permission_key'],
             ]);
         }
 
         // Crear roles
         $adminRole = Role::create([
             'name' => 'admin',
-            'description' => 'Administrador del sistema'
+            'description' => 'Administrador del sistema',
         ]);
 
         $userRole = Role::create([
             'name' => 'user',
-            'description' => 'Usuario básico'
+            'description' => 'Usuario básico',
         ]);
 
         // Asignar TODOS los permisos al rol admin
@@ -79,7 +100,7 @@ class RolePermissionSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@test.com',
             'password' => bcrypt('password'),
-            'is_active' => true
+            'is_active' => true,
         ]);
         $adminUser->roles()->attach($adminRole->id);
 
