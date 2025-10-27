@@ -13,8 +13,6 @@ class QrCodes extends Component
 {
     use Toast;
 
-    public $headers = [];
-
     public $qrCodes = [];
 
     // Variables para el modal de creación/edición
@@ -28,30 +26,61 @@ class QrCodes extends Component
 
     public $is_active = true;
 
-    public function mount()
+    // Buscador
+    public $search = '';
+
+    // Filtros
+    public $statusFilter = 'all';
+
+    public $perPage = 10;
+
+    public function mount(): void
     {
-        $this->headers = [
-            ['key' => 'id', 'label' => 'ID'],
-            ['key' => 'name', 'label' => 'Nombre'],
-            ['key' => 'uri', 'label' => 'URL'],
-            ['key' => 'is_active', 'label' => 'Estado'],
-        ];
         $this->loadQrCodes();
     }
 
-    public function loadQrCodes()
+    public function loadQrCodes(): void
     {
-        $this->qrCodes = QrCode::all();
+        $query = QrCode::query();
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('uri', 'like', '%'.$this->search.'%')
+                    ->orWhere('uuid', 'like', '%'.$this->search.'%');
+            });
+        }
+
+        if ($this->statusFilter !== 'all') {
+            $query->where('is_active', $this->statusFilter === 'active');
+        }
+
+        $this->qrCodes = $query->latest()->limit($this->perPage)->get();
     }
 
-    public function create()
+    public function updatedSearch(): void
+    {
+        $this->loadQrCodes();
+    }
+
+    public function updatedStatusFilter(): void
+    {
+        $this->loadQrCodes();
+    }
+
+    public function updatedPerPage(): void
+    {
+        $this->loadQrCodes();
+    }
+
+    public function create(): void
     {
         $this->reset(['name', 'uri', 'is_active', 'editingQrCode']);
         $this->is_active = true;
         $this->showModal = true;
     }
 
-    public function edit($qrCodeId)
+    public function edit($qrCodeId): void
     {
         $qrCode = QrCode::findOrFail($qrCodeId);
         $this->editingQrCode = $qrCode->id;
@@ -61,7 +90,7 @@ class QrCodes extends Component
         $this->showModal = true;
     }
 
-    public function save()
+    public function save(): void
     {
         $validated = $this->validate([
             'name' => 'required|string|max:255',
@@ -86,16 +115,19 @@ class QrCodes extends Component
         $this->loadQrCodes();
     }
 
-    public function delete($qrCodeId)
+    public function delete($qrCodeId): void
     {
         QrCode::findOrFail($qrCodeId)->delete();
         $this->success('Código QR eliminado exitosamente');
         $this->loadQrCodes();
     }
 
-    public function toggleStatus($qrCodeId)
+    public function toggleStatus($qrCodeId): void
     {
-        // TODO: Implementar toggle de estado activo/inactivo
+        $qrCode = QrCode::findOrFail($qrCodeId);
+        $qrCode->update(['is_active' => ! $qrCode->is_active]);
+        $this->success($qrCode->is_active ? 'Código QR activado' : 'Código QR desactivado');
+        $this->loadQrCodes();
     }
 
     public function render()
