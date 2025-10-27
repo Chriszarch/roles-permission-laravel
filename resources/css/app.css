@@ -6,8 +6,68 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    /* Fuentes */
+    --font-sans: 'Inter', 'Geist Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Paleta de colores personalizada */
+    --color-primary-50: oklch(0.97 0.01 250);
+    --color-primary-100: oklch(0.93 0.03 250);
+    --color-primary-200: oklch(0.87 0.06 250);
+    --color-primary-300: oklch(0.78 0.11 250);
+    --color-primary-400: oklch(0.68 0.16 250);
+    --color-primary-500: oklch(0.58 0.20 250);
+    --color-primary-600: oklch(0.50 0.22 250);
+    --color-primary-700: oklch(0.42 0.19 250);
+    --color-primary-800: oklch(0.35 0.15 250);
+    --color-primary-900: oklch(0.30 0.11 250);
+    --color-primary-950: oklch(0.20 0.07 250);
+
+    /* Colores de acento */
+    --color-accent-50: oklch(0.97 0.01 200);
+    --color-accent-100: oklch(0.94 0.03 200);
+    --color-accent-200: oklch(0.89 0.06 200);
+    --color-accent-300: oklch(0.81 0.10 200);
+    --color-accent-400: oklch(0.70 0.14 200);
+    --color-accent-500: oklch(0.60 0.17 200);
+    --color-accent-600: oklch(0.52 0.18 200);
+    --color-accent-700: oklch(0.44 0.16 200);
+    --color-accent-800: oklch(0.37 0.13 200);
+    --color-accent-900: oklch(0.32 0.10 200);
+    --color-accent-950: oklch(0.22 0.06 200);
+}
+
+@layer base {
+    /* Importar fuentes desde Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Estilos base personalizados */
+    body {
+        @apply antialiased;
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+
+    /* Mejoras tipográficas */
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-semibold tracking-tight;
+    }
+
+    /* Personalización de scrollbar para navegadores webkit */
+    ::-webkit-scrollbar {
+        @apply w-2 h-2;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-base-200;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-base-300 rounded-full;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-base-content/30;
+    }
 }
 
 

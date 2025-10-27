@@ -5,8 +5,10 @@
   </div>
 
   <!-- Search Card -->
-  <x-card class="p-6">
+  <x-card class="p-6 flex flex-col gap-6">
     <div class="space-y-4">
+      <h2>Google Places API</h2>
+      <hr class="border-gray-300 dark:border-gray-600" />
       <!-- Search Input -->
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -116,6 +118,128 @@
         </div>
       </template>
     </div>
+
+    <div class="flex flex-col gap-2 mt-12">
+      <!-- Divider -->
+      
+      <h2>Trip Advisor API</h2>
+      <hr class="border-gray-300 dark:border-gray-600" />
+
+      <!-- Search Input -->
+      <div class="mt-6">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Buscar Negocio
+        </label>
+        <div class="relative">
+          <input type="text"
+               placeholder="Ej: Hotel La Paz"
+               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+               wire:model.live.debounce.300ms="tripAdvisorQuery"
+               autocomplete="off">
+          
+          <!-- Loading indicator -->
+          @if($tripAdvisorLoading)
+          <div class="absolute right-3 top-3">
+            <svg class="animate-spin h-6 w-6 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          @endif
+
+          <!-- Suggestions dropdown -->
+          @if(count($tripAdvisorSuggestions) > 0)
+          <div class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            @foreach($tripAdvisorSuggestions as $suggestion)
+            <div wire:click="selectTripAdvisorPlace({{ json_encode($suggestion) }})"
+                 class="p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-600 last:border-b-0 transition-colors">
+              <div class="font-medium text-sm text-gray-900 dark:text-white">{{ $suggestion['name'] }}</div>
+              <div class="text-xs text-gray-600 dark:text-gray-400">{{ $suggestion['address'] }}</div>
+            </div>
+            @endforeach
+          </div>
+          @endif
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          💡 Tip: Sé específico con el nombre y ubicación del negocio para mejores resultados
+        </p>
+      </div>
+
+      <!-- Results Info (shown when a place is selected) -->
+      @if($tripAdvisorPlaceName)
+      <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+        <div class="flex items-start gap-3">
+          <svg class="w-6 h-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <div class="flex-1">
+            <h4 class="font-semibold text-green-900 dark:text-green-100">Lugar Seleccionado</h4>
+            <p class="text-sm text-green-800 dark:text-green-200 mt-1">{{ $tripAdvisorPlaceName }}</p>
+          </div>
+        </div>
+      </div>
+      @endif
+    
+    <!-- Review URL Input (read-only) -->
+      <div x-data="{ tripCopied: false }">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Enlace de Reseñas
+        </label>
+        <div class="flex gap-2">
+          <input readonly 
+                 type="text" 
+                 value="{{ $tripAdvisorReviewUrl }}"
+                 id="tripAdvisorReviewUrl"
+                 placeholder="Selecciona un negocio para generar el enlace..."
+                 class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white cursor-not-allowed" />
+
+          <button 
+              type="button"
+              @click="
+                const input = document.getElementById('tripAdvisorReviewUrl');
+                input.select();
+                document.execCommand('copy');
+                tripCopied = true;
+                setTimeout(() => { tripCopied = false; }, 3000);
+              "
+              @if(!$tripAdvisorReviewUrl) disabled @endif
+              class="px-4 py-3 rounded-lg text-white font-medium transition-colors flex items-center gap-2 {{ $tripAdvisorReviewUrl ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+            Copiar
+          </button>
+        </div>
+
+        <!-- Success Message -->
+        <template x-if="tripCopied">
+          <div x-transition
+               class="flex items-center gap-2 text-green-600 dark:text-green-400 mt-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="font-medium">¡Enlace copiado con éxito!</span>
+          </div>
+        </template>
+      </div>
+
+      <!-- Clear Button -->
+      @if($tripAdvisorReviewUrl)
+      <div class="flex justify-end">
+        <button 
+            type="button"
+            wire:click="clearTripAdvisor"
+            class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Limpiar
+        </button>
+      </div>
+      @endif
+
+              </div>
+    
   </x-card>
 
   <!-- Instructions Card -->
@@ -136,7 +260,7 @@
       </li>
       <li class="flex gap-2">
         <span class="font-bold">4.</span>
-        <span>Comparte tu enlace con tus clientes para que dejen reseñas en Google</span>
+        <span>Comparte tu enlace con tus clientes para que dejen reseñas en Google o TripAdvisor</span>
       </li>
     </ol>
   </x-card>

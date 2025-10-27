@@ -39,4 +39,8 @@ return [
         'api_key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    'tripadvisor' => [
+        'api_key' => env('TRIPADVISOR_API_KEY'),
+    ],
+
 ];
