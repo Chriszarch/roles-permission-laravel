@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Permission extends Model
 {
@@ -43,12 +43,10 @@ class Permission extends Model
         return $this->belongsTo(Module::class);
     }
 
-
     public function getFullName(): string
     {
-        return $this->module->name . ' - ' . $this->action;
+        return $this->module->name.' - '.$this->action;
     }
-
 
     public function is_active(): bool
     {

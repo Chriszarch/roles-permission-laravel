@@ -6,8 +6,6 @@ use App\Models\QrCode;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
-use Endroid\QrCode\Label\Font\OpenSans;
-use Endroid\QrCode\Label\LabelAlignment;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Http\RedirectResponse;
@@ -20,7 +18,7 @@ class QrCodeController extends Controller
      */
     public function redirect(QrCode $qrCode): RedirectResponse
     {
-        abort_if(!$qrCode->is_active, 404);
+        abort_if(! $qrCode->is_active, 404);
 
         // Aquí podrías registrar la visita (scan) si lo necesitas en el futuro
 
@@ -33,7 +31,7 @@ class QrCodeController extends Controller
     public function download(QrCode $qrCode): Response
     {
         $qrCodeBuilder = new Builder(
-            writer: new PngWriter(),
+            writer: new PngWriter,
             writerOptions: [],
             validateResult: false,
             data: route('qr.redirect', $qrCode),
@@ -42,9 +40,6 @@ class QrCodeController extends Controller
             size: 300,
             margin: 10,
             roundBlockSizeMode: RoundBlockSizeMode::Margin,
-            labelText: $qrCode->name,
-            labelFont: new OpenSans(16),
-            labelAlignment: LabelAlignment::Center
         );
 
         $result = $qrCodeBuilder->build();

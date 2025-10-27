@@ -3,11 +3,11 @@
 namespace App\Livewire;
 
 use App\Models\Role;
-use Mary\Traits\Toast;
-use Livewire\Attributes\Title;
-use Livewire\Component;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+use Mary\Traits\Toast;
 
 #[Title('Usuarios')]
 class Users extends Component
@@ -15,16 +15,24 @@ class Users extends Component
     use AuthorizesRequests, Toast;
 
     public $headers = [];
+
     public $users = [];
+
     public $roles = [];
+
     public $title = 'Usuarios';
 
     // Variables para el modal de edición
     public $showEditModal = false;
+
     public $editingUser = null;
+
     public $name = '';
+
     public $email = '';
+
     public $selectedRoles = [];
+
     public $is_active = true;
 
     public function mount()
@@ -66,7 +74,7 @@ class Users extends Component
             $this->authorize('update', $this->editingUser);
             $this->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $this->editingUser->id,
+                'email' => 'required|email|unique:users,email,'.$this->editingUser->id,
             ]);
 
             $this->editingUser->update([
@@ -75,10 +83,11 @@ class Users extends Component
                 'is_active' => $this->is_active,
             ]);
 
-            if (!empty($this->selectedRoles)) {
+            if (! empty($this->selectedRoles)) {
                 $this->editingUser->roles()->sync($this->selectedRoles);
-            }else{
+            } else {
                 $this->error('Error', 'Debe asignar al menos un rol al usuario', position: 'toast-top toast-end');
+
                 return;
             }
 

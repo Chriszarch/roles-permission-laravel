@@ -3,11 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
-    public function view(User $authUser): bool
+    public function view(User $authUser, User $targetUser): bool
     {
         return $authUser->can('users.view');
     }
@@ -23,7 +22,7 @@ class UserPolicy
      */
     public function deactivate(User $authUser, User $targetUser): bool
     {
-        //No permitir desactivarse a sí mismo
+        // No permitir desactivarse a sí mismo
         if ($authUser->id === $targetUser->id) {
             return false;
         }

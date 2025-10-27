@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use Illuminate\Support\Collection;
 use Livewire\Component;
 use Mary\Traits\Toast;
 

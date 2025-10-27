@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Role Model
- * 
+ *
  * Represents system roles (Admin, User, Manager, etc.)
  * Each role can have multiple permissions and be assigned to multiple users
- * 
+ *
  * @property int $id
  * @property string $name
  * @property string|null $description
@@ -62,7 +63,7 @@ class Role extends Model
 
     /**
      * Users that have this role (Many-to-Many)
-     * 
+     *
      * A role can be assigned to multiple users
      * Uses pivot table: user_roles
      */
@@ -78,7 +79,7 @@ class Role extends Model
 
     /**
      * Permissions assigned to this role (Many-to-Many)
-     * 
+     *
      * A role can have multiple permissions
      * Uses pivot table: role_permissions
      */
@@ -116,10 +117,10 @@ class Role extends Model
 
     /**
      * Get all roles
-     * 
-     * @return \Illuminate\Database\Eloquent\Collection
+     *
+     * @return Collection<Role>  Collection of all Role models
      */
-    public function getAllRoles()
+    public function getAllRoles() : Collection
     {
         return $this->all();
     }
@@ -130,9 +131,8 @@ class Role extends Model
 
     /**
      * Check if role has a specific permission
-     * 
-     * @param string $permissionKey The permission key to check
-     * @return bool
+     *
+     * @param  string  $permissionKey  The permission key to check
      */
     public function hasPermission(string $permissionKey): bool
     {
@@ -143,9 +143,8 @@ class Role extends Model
 
     /**
      * Assign a permission to this role
-     * 
-     * @param Permission|int $permission
-     * @return void
+     *
+     * @param  Permission|int  $permission
      */
     public function givePermission($permission): void
     {
@@ -158,9 +157,8 @@ class Role extends Model
 
     /**
      * Remove a permission from this role
-     * 
-     * @param Permission|int $permission
-     * @return void
+     *
+     * @param  Permission|int  $permission
      */
     public function revokePermission($permission): void
     {
@@ -173,8 +171,6 @@ class Role extends Model
 
     /**
      * Get all permission keys for this role
-     * 
-     * @return array
      */
     public function getPermissionKeys(): array
     {

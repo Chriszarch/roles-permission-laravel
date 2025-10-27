@@ -4,10 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -86,23 +86,4 @@ class User extends Authenticatable
     {
         return $this->roles()->where('name', $roleName)->exists();
     }
-
-    /**
-     * Verificar si el usuario puede realizar una acción
-     */
-    public function can($ability, $arguments = []): bool
-    {
-        // Si es admin, puede todo
-        if ($this->hasRole('admin')) {
-            return true;
-        }
-
-        // Verificar permiso específico
-        return $this->roles()
-            ->whereHas('permissions', function ($query) use ($ability) {
-                $query->where('permission_key', $ability);
-            })
-            ->exists();
-    }
-
 }

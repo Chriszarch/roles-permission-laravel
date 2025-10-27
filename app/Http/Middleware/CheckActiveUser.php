@@ -19,9 +19,9 @@ class CheckActiveUser
         // Si el usuario está logueado
         if (Auth::check()) {
             $user = Auth::user();
-            
+
             // Si el usuario ya no está activo, cerrar sesión
-            if (!$user->is_active) {
+            if (! $user->is_active) {
                 Auth::logout();
                 session()->invalidate();
                 session()->regenerateToken();
