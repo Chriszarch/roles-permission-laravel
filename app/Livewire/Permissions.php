@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Module;
 use App\Models\Permission;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -13,6 +15,7 @@ use Mary\Traits\Toast;
 #[Title('Permisos')]
 class Permissions extends Component
 {
+    use AuthorizesRequests;
     use Toast;
     use WithPagination;
 
@@ -45,6 +48,8 @@ class Permissions extends Component
 
     public function openCreateModal(): void
     {
+        Gate::authorize('create', Permission::class);
+
         $this->resetForm();
         $this->isEditing = false;
         $this->myModal2 = true;
@@ -53,6 +58,8 @@ class Permissions extends Component
     public function openEditModal($id): void
     {
         if ($permission = Permission::find($id)) {
+            Gate::authorize('update', $permission);
+
             $this->permissionId = $permission->id;
             $this->module_id = $permission->module_id;
             $this->action = $permission->action;
@@ -67,6 +74,8 @@ class Permissions extends Component
     public function save(): void
     {
         if ($this->isEditing) {
+            Gate::authorize('update', Permission::find($this->permissionId));
+
             $this->validate([
                 'module_id' => 'required|exists:modules,id',
                 'action' => 'required|string|max:255',
@@ -74,6 +83,8 @@ class Permissions extends Component
             ]);
             $this->update();
         } else {
+            Gate::authorize('create', Permission::class);
+
             $this->validate();
             $this->create();
         }
