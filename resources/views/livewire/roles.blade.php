@@ -1,7 +1,9 @@
 <div>
     <div class="w-full flex justify-between">
         <p class="text-gray-600 dark:text-gray-400 mt-1">Administra los roles del sistema</p>
-        <x-button label="Agregar Rol" icon="o-plus" wire:click="openCreateModal" class="mb-4 btn-primary" />
+        @can('roles.create')
+            <x-button label="Agregar Rol" icon="o-plus" wire:click="openCreateModal" class="mb-4 btn-primary" />
+        @endcan
     </div>
 
     <x-card class="mb-4">
@@ -9,14 +11,16 @@
         <div class="overflow-x-auto">
             <x-table :headers="$headers" :rows="$roles" with-pagination>
 
-            @scope('cell_status', $role)
-                <x-badge value="{{ $role->is_active ? 'Activo' : 'Inactivo' }}"
-                    class="{{ $role->is_active ? 'badge-primary' : 'badge-soft' }}" />
-            @endscope
+                @scope('cell_status', $role)
+                    <x-badge value="{{ $role->is_active ? 'Activo' : 'Inactivo' }}"
+                        class="{{ $role->is_active ? 'badge-primary' : 'badge-soft' }}" />
+                @endscope
 
-            @scope('actions', $role)
-                <x-button icon="o-pencil" wire:click="openEditModal({{ $role->id }})" spinner class="btn-sm" />
-            @endscope
+                @can('roles.edit')
+                    @scope('actions', $role)
+                        <x-button icon="o-pencil" wire:click="openEditModal({{ $role->id }})" spinner class="btn-sm" />
+                    @endscope
+                @endcan
             </x-table>
         </div>
 

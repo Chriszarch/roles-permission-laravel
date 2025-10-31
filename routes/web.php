@@ -3,8 +3,8 @@
 use App\Http\Controllers\QrCodeController;
 use App\Livewire\Dashboard;
 use App\Livewire\Login;
-use App\Livewire\SearchPlace;
 use App\Livewire\Roles;
+use App\Livewire\SearchPlace;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/roles', Roles::class)
         ->can('roles.view', App\Models\Role::class)
         ->name('roles');
+
+    Route::get('/permissions', App\Livewire\Permissions::class)
+        ->can('permissions.view', App\Models\Permission::class)
+        ->name('permissions');
 });
 
 Route::get('/logout', function () {
