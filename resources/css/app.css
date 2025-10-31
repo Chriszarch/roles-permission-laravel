@@ -93,10 +93,12 @@
 * Because Laravel defaults does not match well the design of daisyUI.
 */
 
-.mary-table-pagination span[aria-current="page"] > span {
-    @apply bg-primary text-base-100
-}
-
+/** General button **/
 .mary-table-pagination button {
     @apply cursor-pointer
+}
+ 
+/** Active button **/
+.mary-table-pagination span[aria-current="page"] > span {
+    @apply bg-primary text-base-100
 }

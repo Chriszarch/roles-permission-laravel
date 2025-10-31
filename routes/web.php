@@ -4,6 +4,7 @@ use App\Http\Controllers\QrCodeController;
 use App\Livewire\Dashboard;
 use App\Livewire\Login;
 use App\Livewire\SearchPlace;
+use App\Livewire\Roles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,10 @@ Route::middleware('auth')->group(function () {
         ->name('qr-codes');
 
     Route::get('/google-places', SearchPlace::class)->name('google-places');
+
+    Route::get('/roles', Roles::class)
+        ->can('roles.view', App\Models\Role::class)
+        ->name('roles');
 });
 
 Route::get('/logout', function () {
