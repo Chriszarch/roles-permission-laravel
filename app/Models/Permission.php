@@ -38,6 +38,19 @@ class Permission extends Model
         )->withTimestamps();
     }
 
+    /**
+     * The users that have this permission directly (higher priority).
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'user_permissions',
+            'permission_id',
+            'user_id'
+        )->withTimestamps();
+    }
+
     public function module(): BelongsTo
     {
         return $this->belongsTo(Module::class);
