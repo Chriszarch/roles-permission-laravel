@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Role;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -51,8 +50,7 @@ class Roles extends Component
 
     public function openCreateModal(): void
     {
-        Gate::authorize('create', Role::class);
-
+        $this->authorize('roles.create', Role::class);
         $this->resetForm();
         $this->isEditing = false;
         $this->myModal2 = true;
@@ -61,7 +59,7 @@ class Roles extends Component
     public function openEditModal($id): void
     {
         if ($role = Role::find($id)) {
-            Gate::authorize('update', $role);
+            $this->authorize('roles.edit', $role);
 
             $this->roleId = $role->id;
             $this->name = $role->name;
@@ -79,10 +77,10 @@ class Roles extends Component
         $this->validate();
 
         if ($this->isEditing) {
-            Gate::authorize('update', Role::find($this->roleId));
+            $this->authorize('roles.edit', Role::find($this->roleId));
             $this->update();
         } else {
-            Gate::authorize('create', Role::class);
+            $this->authorize('roles.create', Role::class);
             $this->create();
         }
     }

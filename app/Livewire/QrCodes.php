@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\QrCode;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -78,7 +77,7 @@ class QrCodes extends Component
 
     public function create(): void
     {
-        Gate::authorize('create', QrCode::class);
+        $this->authorize('qr.create', QrCode::class);
 
         $this->reset(['name', 'uri', 'is_active', 'editingQrCode']);
         $this->is_active = true;
@@ -88,7 +87,7 @@ class QrCodes extends Component
     public function edit($qrCodeId): void
     {
         $qrCode = QrCode::findOrFail($qrCodeId);
-        Gate::authorize('update', $qrCode);
+        $this->authorize('qr.edit', $qrCode);
 
         $this->editingQrCode = $qrCode->id;
         $this->name = $qrCode->name;
@@ -107,12 +106,12 @@ class QrCodes extends Component
 
         if ($this->editingQrCode) {
             $qrCode = QrCode::findOrFail($this->editingQrCode);
-            Gate::authorize('update', $qrCode);
+            $this->authorize('qr.edit', $qrCode);
 
             $qrCode->update($validated);
             $this->success('Código QR actualizado exitosamente');
         } else {
-            Gate::authorize('create', QrCode::class);
+            $this->authorize('qr.create', QrCode::class);
 
             QrCode::create([
                 ...$validated,
@@ -129,7 +128,7 @@ class QrCodes extends Component
     public function delete($qrCodeId): void
     {
         $qrCode = QrCode::findOrFail($qrCodeId);
-        Gate::authorize('delete', $qrCode);
+        $this->authorize('qr.delete', $qrCode);
 
         $qrCode->delete();
         $this->success('Código QR eliminado exitosamente');
@@ -139,7 +138,7 @@ class QrCodes extends Component
     public function toggleStatus($qrCodeId): void
     {
         $qrCode = QrCode::findOrFail($qrCodeId);
-        Gate::authorize('update', $qrCode);
+        $this->authorize('qr.edit', $qrCode);
 
         $qrCode->update(['is_active' => ! $qrCode->is_active]);
         $this->success($qrCode->is_active ? 'Código QR activado' : 'Código QR desactivado');

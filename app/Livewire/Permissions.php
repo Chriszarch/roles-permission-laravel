@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\Module;
 use App\Models\Permission;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -48,7 +47,7 @@ class Permissions extends Component
 
     public function openCreateModal(): void
     {
-        Gate::authorize('create', Permission::class);
+        $this->authorize('permissions.create', Permission::class);
 
         $this->resetForm();
         $this->isEditing = false;
@@ -58,7 +57,7 @@ class Permissions extends Component
     public function openEditModal($id): void
     {
         if ($permission = Permission::find($id)) {
-            Gate::authorize('update', $permission);
+            $this->authorize('permissions.edit', $permission);
 
             $this->permissionId = $permission->id;
             $this->module_id = $permission->module_id;
@@ -74,7 +73,7 @@ class Permissions extends Component
     public function save(): void
     {
         if ($this->isEditing) {
-            Gate::authorize('update', Permission::find($this->permissionId));
+            $this->authorize('permissions.edit', Permission::find($this->permissionId));
 
             $this->validate([
                 'module_id' => 'required|exists:modules,id',
@@ -83,7 +82,7 @@ class Permissions extends Component
             ]);
             $this->update();
         } else {
-            Gate::authorize('create', Permission::class);
+            $this->authorize('permissions.create', Permission::class);
 
             $this->validate();
             $this->create();
