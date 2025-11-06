@@ -55,19 +55,32 @@ class SearchPlace extends Component
 
     protected function fetchPlaceDetailsAndBuildReviewUrl(string $placeId): void
     {
-        $serverKey = config('services.google.maps_server_key')
-                   ?? env('GOOGLE_MAPS_SERVER_KEY');
+        $serverKey = config('services.google_maps')
+                   ?? env('GOOGLE_MAPS_API_KEY');
 
-        // Endpoint de la nueva API Places (New)
+        if (empty($serverKey)) {
+            Log::warning('Google Maps server key missing; skipping place details fetch', ['placeId' => $placeId]);
+            $this->reviewUrl = '';
+            $this->placeName = '';
+
+            return;
+        }
+
         $endpoint = "https://places.googleapis.com/v1/places/{$placeId}";
-
-        // Definimos la máscara de campos (field mask) para obtener googleMapsLinks
         $fieldMask = 'placeId,name,formattedAddress,googleMapsLinks';
 
-        $response = Http::get($endpoint, [
-            'key' => $serverKey,
-            'fieldMask' => $fieldMask,
-        ]);
+        try {
+            $response = Http::timeout(5)->get($endpoint, [
+                'key' => $serverKey,
+                'fieldMask' => $fieldMask,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching Google Place details', ['error' => $e->getMessage(), 'placeId' => $placeId]);
+            $this->reviewUrl = '';
+            $this->placeName = '';
+
+            return;
+        }
 
         if (! $response->successful()) {
             $this->reviewUrl = '';
@@ -76,26 +89,25 @@ class SearchPlace extends Component
             return;
         }
 
-        $data = $response->json();
-        $result = $data; // en la versión v1, los campos están directamente en el objeto
+        $result = $response->json() ?? [];
 
         $this->placeName = $result['name'] ?? '';
 
-        // Extraer el writeAReviewUri si existe
-        if (isset($result['googleMapsLinks']['writeAReviewUri'])) {
-            $this->reviewUrl = $result['googleMapsLinks']['writeAReviewUri'];
+        $links = $result['googleMapsLinks'] ?? [];
+
+        // Prefer writeAReviewUri, otherwise reviewsUri, otherwise fallback public URL
+        if (! empty($links['writeAReviewUri'])) {
+            $this->reviewUrl = $links['writeAReviewUri'];
 
             return;
         }
 
-        // Si no existe, fallback: usar reviewsUri o url genérico
-        if (! empty($result['googleMapsLinks']['reviewsUri'])) {
-            $this->reviewUrl = $result['googleMapsLinks']['reviewsUri'];
+        if (! empty($links['reviewsUri'])) {
+            $this->reviewUrl = $links['reviewsUri'];
 
             return;
         }
 
-        // Fallback público conocido
         $this->reviewUrl = "https://search.google.com/local/writereview?placeid={$placeId}";
     }
 

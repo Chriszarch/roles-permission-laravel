@@ -103,32 +103,23 @@ class User extends Authenticatable
     /**
      * Verificar si el usuario tiene un permiso específico.
      * Jerarquía: Permisos directos > Permisos por rol
+     *
+     * NOTA: Para autorización usa Gate::allows() o $this->authorize()
+     * que automáticamente pasa por Gate::before() con la jerarquía correcta.
      */
-    public function can($ability, $arguments = []): bool
+    public function hasPermission(string $permissionKey): bool
     {
-        // Si es un string, verificar permiso por clave
-        if (is_string($ability)) {
-            // 1. PRIORIDAD MÁXIMA: Verificar permisos directos del usuario
-            $hasDirectPermission = $this->directPermissions()
-                ->where('permission_key', $ability)
-                ->exists();
-
-            if ($hasDirectPermission) {
-                return true;
-            }
-
-            // 2. SEGUNDA PRIORIDAD: Verificar permisos a través de roles
-            $hasRolePermission = $this->roles()
-                ->whereHas('permissions', function ($query) use ($ability) {
-                    $query->where('permission_key', $ability);
-                })
-                ->exists();
-
-            return $hasRolePermission;
+        // 1. PRIORIDAD MÁXIMA: Verificar permisos directos del usuario
+        if ($this->hasDirectPermission($permissionKey)) {
+            return true;
         }
 
-        // Si no es string, usar el comportamiento por defecto de Laravel
-        return parent::can($ability, $arguments);
+        // 2. SEGUNDA PRIORIDAD: Verificar permisos a través de roles
+        return $this->roles()
+            ->whereHas('permissions', function ($query) use ($permissionKey) {
+                $query->where('permission_key', $permissionKey);
+            })
+            ->exists();
     }
 
     /**

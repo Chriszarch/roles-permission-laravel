@@ -23,6 +23,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        // TODO revisar porque no me parece una buena practica
+        // Desactivar autodescubrimiento de policies para evitar errores
+        // La autorización se maneja completamente con Gates
+        \Illuminate\Support\Facades\Gate::guessPolicyNamesUsing(function () {
+            return null;
+        });
+
         // Registrar Policy
         // ? Si es necesaria una logica de negocio exclusiva del modulo agregas un policy
         // Gate::policy(\App\Models\User::class, \App\Policies\UserPolicy::class);

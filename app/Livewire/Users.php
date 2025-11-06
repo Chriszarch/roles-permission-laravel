@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -100,15 +101,8 @@ class Users extends Component
         $this->is_active = $user->is_active;
         $this->selectedRoles = $user->roles->pluck('id')->toArray();
 
-        // Obtener permisos directos del usuario a través de sus roles
-        $this->selectedPermissions = $user->roles()
-            ->with('permissions')
-            ->get()
-            ->pluck('permissions')
-            ->flatten()
-            ->pluck('id')
-            ->unique()
-            ->toArray();
+        // Obtener solo permisos directos del usuario (user_permissions)
+        $this->selectedPermissions = $user->directPermissions->pluck('id')->toArray();
 
         $this->showEditModal = true;
         $this->isEditing = true;
@@ -140,9 +134,6 @@ class Users extends Component
 
             // Asignar roles
             $user->roles()->sync($this->selectedRoles);
-
-            // Sincronizar permisos en los roles seleccionados
-            $this->syncPermissionsToRoles();
 
             $this->showCreateModal = false;
             $this->loadUsers();
@@ -180,8 +171,10 @@ class Users extends Component
             // Asignar roles
             $this->editingUser->roles()->sync($this->selectedRoles);
 
-            // Sincronizar permisos en los roles seleccionados
-            $this->syncPermissionsToRoles();
+            // Sincronizar permisos directos del usuario (solo si es admin)
+            if (Auth::user()->hasRole('admin')) {
+                $this->editingUser->directPermissions()->sync($this->selectedPermissions);
+            }
 
             $this->showEditModal = false;
             $this->loadUsers();
@@ -192,24 +185,6 @@ class Users extends Component
             throw $e;
         } catch (\Exception $e) {
             $this->error('Error', 'No se pudo actualizar el usuario. Inténtalo de nuevo.', position: 'toast-top toast-end');
-        }
-    }
-
-    private function syncPermissionsToRoles()
-    {
-        // Sincronizar permisos solo en los roles seleccionados
-        foreach ($this->selectedRoles as $roleId) {
-            $role = Role::find($roleId);
-            if ($role) {
-                // Obtener permisos actuales del rol
-                $currentPermissions = $role->permissions->pluck('id')->toArray();
-
-                // Combinar con los permisos seleccionados (sin duplicados)
-                $allPermissions = array_unique(array_merge($currentPermissions, $this->selectedPermissions));
-
-                // Sincronizar
-                $role->permissions()->sync($allPermissions);
-            }
         }
     }
 

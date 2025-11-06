@@ -1,7 +1,7 @@
 <div>
     <div class="w-full flex justify-between mb-4">
         <p class="text-gray-600 dark:text-gray-400 mt-1">Administra los usuarios del sistema</p>
-        @can('users.create', App\Models\User::class)
+        @can('users.create')
             <x-button label="Agregar Usuario" icon="o-plus" wire:click="openCreateModal" class="btn-primary" />
         @endcan
     </div>
@@ -20,18 +20,18 @@
 
                 @scope('actions', $user)
                     <div class="flex gap-2">
-                        @can('users.edit', $user)
+                        @can('users.edit')
                             <x-button class="btn-sm btn-primary" icon="o-pencil" wire:click="edit({{ $user->id }})" spinner
                                 tooltip="Editar usuario" />
                         @endcan
 
                         @if ($user->is_active)
-                            @can('users.delete', $user)
+                            @can('users.delete')
                                 <x-button class="btn-sm btn-error" icon="o-x-mark" wire:click="delete({{ $user->id }})" spinner
                                     tooltip="Desactivar usuario" onclick="return confirm('¿Está seguro de desactivar este usuario?')" />
                             @endcan
                         @else
-                            @can('users.edit', $user)
+                            @can('users.edit')
                                 <x-button class="btn-sm btn-success" icon="o-check" wire:click="activate({{ $user->id }})" spinner
                                     tooltip="Activar usuario" />
                             @endcan
@@ -235,49 +235,60 @@
                     />
                 </div>
 
-                <div class="border-t border-gray-200 dark:border-gray-700 my-6"></div>
+                @if(auth()->user()->hasRole('admin'))
+                    <div class="border-t border-gray-200 dark:border-gray-700 my-6"></div>
 
-                {{-- Permisos por Módulo --}}
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                        <x-icon name="o-lock-closed" class="w-5 h-5 text-orange-600" />
-                        Permisos Adicionales
-                    </h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Selecciona permisos adicionales que se agregarán a los roles seleccionados
-                    </p>
-                    <div class="space-y-4">
-                        @foreach ($modules as $module)
-                            <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/50 dark:to-cyan-900/50 flex items-center justify-center">
-                                            <x-icon name="o-cube" class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                        </div>
-                                        <div>
-                                            <h4 class="font-semibold text-gray-900 dark:text-white">{{ $module->name }}</h4>
-                                            @if ($module->description)
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $module->description }}</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-                                    @foreach ($module->permissions as $permission)
-                                        <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition">
-                                            <input type="checkbox" wire:model="selectedPermissions" value="{{ $permission->id }}"
-                                                class="checkbox checkbox-sm checkbox-primary" />
-                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                {{ $permission->action }}
-                                            </span>
-                                        </label>
-                                    @endforeach
+                    {{-- Permisos Directos del Usuario (Solo Admin) --}}
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                            <x-icon name="o-lock-closed" class="w-5 h-5 text-orange-600" />
+                            Permisos Directos del Usuario
+                        </h3>
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+                            <div class="flex gap-3">
+                                <x-icon name="o-exclamation-triangle" class="w-5 h-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p class="text-sm font-semibold text-yellow-800 dark:text-yellow-300">Permisos Exclusivos</p>
+                                    <p class="text-xs text-yellow-700 dark:text-yellow-400 mt-1">
+                                        Estos permisos tienen <strong>máxima prioridad</strong> y prevalecen sobre los permisos asignados por roles. 
+                                        Úsalos solo para casos excepcionales.
+                                    </p>
                                 </div>
                             </div>
-                        @endforeach
+                        </div>
+                        <div class="space-y-4">
+                            @foreach ($modules as $module)
+                                <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/50 dark:to-cyan-900/50 flex items-center justify-center">
+                                                <x-icon name="o-cube" class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                            </div>
+                                            <div>
+                                                <h4 class="font-semibold text-gray-900 dark:text-white">{{ $module->name }}</h4>
+                                                @if ($module->description)
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $module->description }}</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+                                        @foreach ($module->permissions as $permission)
+                                            <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition">
+                                                <input type="checkbox" wire:model="selectedPermissions" value="{{ $permission->id }}"
+                                                    class="checkbox checkbox-sm checkbox-primary" />
+                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    {{ $permission->action }}
+                                                </span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
 
             <div class="flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 -mx-6 -mb-6 px-6 py-4 sticky bottom-0">
