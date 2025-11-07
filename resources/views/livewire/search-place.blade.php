@@ -407,7 +407,6 @@ function searchPlace() {
       this.suggestions = [];
       this.showSuggestions = false;
       this.copied = false;
-      console.log('🧹 Formulario limpiado');
     }
   }
 }
