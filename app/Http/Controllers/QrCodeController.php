@@ -20,7 +20,13 @@ class QrCodeController extends Controller
     {
         abort_if(! $qrCode->is_active, 404);
 
-        // Aquí podrías registrar la visita (scan) si lo necesitas en el futuro
+        // Registrar el escaneo
+        $qrCode->scans()->create([
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'referer' => request()->header('referer'),
+            'scanned_at' => now(),
+        ]);
 
         return redirect()->away($qrCode->uri);
     }

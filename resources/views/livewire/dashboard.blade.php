@@ -6,16 +6,27 @@
         </div>
         <div class="flex gap-2">
             <x-button icon="o-arrow-path" class="btn-ghost btn-sm" wire:click="$refresh">
-                Refresh
+                Actualizar
             </x-button>
-            <x-button icon="o-calendar-days" class="btn-primary btn-sm">
-                Last 30 days
-            </x-button>
+            <x-dropdown>
+                <x-slot:trigger>
+                    <x-button class="btn-primary btn-sm" icon="o-calendar-days">
+                        {{ $this->periods[$selectedPeriod] }}
+                    </x-button>
+                </x-slot:trigger>
+                @foreach ($this->periods as $value => $label)
+                    <x-menu-item 
+                        :title="$label"
+                        icon="{{ $selectedPeriod === $value ? 'o-check' : '' }}"
+                        wire:click="updatePeriod('{{ $value }}')"
+                    />
+                @endforeach
+            </x-dropdown>
         </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach ($this->stats as $stat)
             <x-card class="p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-center justify-between">
@@ -27,7 +38,7 @@
                                 class="text-sm font-medium {{ $stat['positive'] ? 'text-green-600' : 'text-red-600' }}">
                                 {{ $stat['change'] }}
                             </span>
-                            <span class="text-sm text-gray-500 ml-1">from last month</span>
+                            <span class="text-sm text-gray-500 ml-1">vs período anterior</span>
                         </div>
                     </div>
                     <div class="p-3 {{ $stat['bg'] }} rounded-full">
@@ -38,34 +49,47 @@
         @endforeach
     </div>
 
-    <!-- Charts and Analytics -->
+    <!-- Charts -->
     <div class="grid w-full gap-6">
-        <!-- Revenue Chart -->
+        <!-- Scans Chart -->
         <x-card class="p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Revenue Overview</h3>
-                <x-dropdown>
-                    <x-slot:trigger>
-                        <x-button icon="o-ellipsis-horizontal" class="btn-ghost btn-sm" />
-                    </x-slot:trigger>
-                    <x-menu-item title="Export" icon="o-arrow-down-tray" />
-                    <x-menu-item title="View Details" icon="o-eye" />
-                </x-dropdown>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Histórico de Escaneos
+                </h3>
             </div>
 
-            <!-- Simulated Chart -->
-            <div
-                class="relative h-64 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-lg p-4">
-                <div class="flex items-end justify-between h-full">
-                    @foreach ($this->chartData['labels'] as $index => $label)
-                        <div class="flex flex-col items-center flex-1">
-                            <div class="bg-gradient-to-t from-blue-500 to-purple-500 rounded-t-lg mb-2"
-                                style="height: {{ ($this->chartData['revenue'][$index] / max($this->chartData['revenue'])) * 200 }}px; width: 24px;">
+            <!-- Chart -->
+            <div class="relative h-[400px] bg-white dark:bg-gray-800 rounded-lg p-4">
+                @if (count($this->chartData['labels']) > 0)
+                    <div class="flex items-end justify-between h-full">
+                        @foreach ($this->chartData['labels'] as $index => $label)
+                            <div class="flex flex-col items-center flex-1 group">
+                                {{-- Tooltip --}}
+                                <div class="absolute bottom-full mb-2 hidden group-hover:block">
+                                    <div class="bg-gray-900 text-white text-xs rounded py-1 px-2">
+                                        <p class="font-medium">{{ $this->chartData['datasets'][0]['data'][$index] }} escaneos</p>
+                                        <p class="text-gray-300">{{ $label }}</p>
+                                    </div>
+                                </div>
+                                
+                                {{-- Bar --}}
+                                <div class="bg-gradient-to-t from-blue-500 to-blue-400 hover:from-blue-600 hover:to-blue-500 rounded-t-lg mb-2 transition-all cursor-help"
+                                    style="height: {{ ($this->chartData['datasets'][0]['data'][$index] / max($this->chartData['datasets'][0]['data'])) * 320 }}px; width: {{ $this->selectedPeriod === 'today' ? '40px' : '24px' }};">
+                                </div>
+                                
+                                {{-- Label --}}
+                                <span class="text-xs text-gray-600 dark:text-gray-400 {{ $this->selectedPeriod === 'today' ? 'rotate-0' : '-rotate-45 origin-top-left translate-y-6' }}">
+                                    {{ $label }}
+                                </span>
                             </div>
-                            <span class="text-xs text-gray-600 dark:text-gray-400">{{ $label }}</span>
-                        </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="flex items-center justify-center h-full">
+                        <p class="text-gray-500 dark:text-gray-400">No hay datos para mostrar en este período</p>
+                    </div>
+                @endif
             </div>
         </x-card>
     </div>
