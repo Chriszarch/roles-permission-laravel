@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Session;
 
 class User extends Authenticatable
 {
@@ -123,24 +124,32 @@ class User extends Authenticatable
     }
 
     /**
-     * Obtener todos los permisos del usuario (directos + por roles).
+     * Obtener todos los permisos del usuario (directos + por rol activo).
      * Los permisos directos prevalecen en caso de conflicto.
      */
-    public function getAllPermissions(): array
+    public function getAllPermissions(?string $activeRole = null): array
     {
-        // Permisos directos
+        // Permisos directos (PRIORIDAD MÁXIMA)
         $directPermissions = $this->directPermissions()
             ->pluck('permission_key')
             ->toArray();
 
-        // Permisos por roles
-        $rolePermissions = $this->roles()
-            ->with('permissions')
-            ->get()
-            ->pluck('permissions')
-            ->flatten()
-            ->pluck('permission_key')
-            ->toArray();
+        // Si no se especifica rol activo, obtenerlo de la sesión
+        $activeRole = $activeRole ?? Session::get('active_role');
+        
+        if ($activeRole) {
+            // Permisos del rol activo (SEGUNDA PRIORIDAD)
+            $rolePermissions = $this->roles()
+                ->where('name', $activeRole)
+                ->with('permissions')
+                ->get()
+                ->pluck('permissions')
+                ->flatten()
+                ->pluck('permission_key')
+                ->toArray();
+        } else {
+            $rolePermissions = [];
+        }
 
         // Combinar y eliminar duplicados (los directos ya están primero)
         return collect($directPermissions)

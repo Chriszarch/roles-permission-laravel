@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -45,15 +46,19 @@ class AppServiceProvider extends ServiceProvider
                 return true;
             }
 
-            // JERARQUÍA 2: Verificar permisos a través de roles
-            $hasRolePermission = $user->roles()
-                ->whereHas('permissions', function ($query) use ($ability) {
-                    $query->where('permission_key', $ability);
-                })
-                ->exists();
+            // JERARQUÍA 2: Verificar permisos a través del rol activo
+            $activeRole = Session::get('active_role');
+            if ($activeRole) {
+                $hasRolePermission = $user->roles()
+                    ->where('name', $activeRole)
+                    ->whereHas('permissions', function ($query) use ($ability) {
+                        $query->where('permission_key', $ability);
+                    })
+                    ->exists();
 
-            if ($hasRolePermission) {
-                return true;
+                if ($hasRolePermission) {
+                    return true;
+                }
             }
 
             // No denegar explícitamente para permitir que las policies manejen el resto
