@@ -68,12 +68,36 @@ class Users extends Component
 
     public function loadUsers()
     {
-        $this->users = User::with('roles')->get();
+        $query = User::with('roles');
+
+        // Si el usuario actual es admin, permitirle ver su propio usuario
+        if (Auth::user()->hasRole('admin')) {
+            $query->where(function($q) {
+                $q->whereDoesntHave('roles', function($q2) {
+                    $q2->where('name', 'admin');
+                })
+                ->orWhere('id', Auth::id()); // Incluir el propio usuario admin
+            });
+        } else {
+            // Para usuarios no-admin, excluir todos los admin
+            $query->whereDoesntHave('roles', function($q) {
+                $q->where('name', 'admin');
+            });
+        }
+
+        $this->users = $query->get();
     }
 
     public function loadRoles()
     {
-        $this->roles = Role::where('is_active', true)->get();
+        $query = Role::where('is_active', true);
+        
+        // Si estamos editando y NO es el propio perfil del admin, ocultar rol admin
+        if (!$this->editingUser || ($this->editingUser && !$this->editingUser->hasRole('admin'))) {
+            $query->where('name', '!=', 'admin');
+        }
+        
+        $this->roles = $query->get();
     }
 
     public function loadModulesWithPermissions()
@@ -94,6 +118,15 @@ class Users extends Component
     {
         $user = User::findOrFail($userId);
         $this->authorize('users.edit', $user);
+
+        // Verificar si el usuario a editar tiene rol admin
+        $isTargetAdmin = $user->hasRole('admin');
+        
+        // Si es admin, solo permitir auto-edición
+        if ($isTargetAdmin && $user->id !== Auth::id()) {
+            $this->error('Acceso Denegado', 'No se permite editar perfiles de administradores', position: 'toast-top toast-end');
+            return;
+        }
 
         $this->editingUser = $user;
         $this->name = $user->name;
@@ -121,7 +154,13 @@ class Users extends Component
 
             if (empty($this->selectedRoles)) {
                 $this->error('Error', 'Debe asignar al menos un rol al usuario', position: 'toast-top toast-end');
+                return;
+            }
 
+            // Verificar que no se esté intentando asignar el rol admin
+            $adminRole = Role::where('name', 'admin')->first();
+            if ($adminRole && in_array($adminRole->id, $this->selectedRoles)) {
+                $this->error('Acceso Denegado', 'No se permite asignar el rol de administrador', position: 'toast-top toast-end');
                 return;
             }
 
@@ -158,7 +197,16 @@ class Users extends Component
 
             if (empty($this->selectedRoles)) {
                 $this->error('Error', 'Debe asignar al menos un rol al usuario', position: 'toast-top toast-end');
+                return;
+            }
 
+            // Verificar que no se esté intentando agregar o quitar el rol admin
+            $adminRole = Role::where('name', 'admin')->first();
+            $hadAdminRole = $this->editingUser->roles()->where('name', 'admin')->exists();
+            $willHaveAdminRole = in_array($adminRole?->id, $this->selectedRoles);
+
+            if ($hadAdminRole !== $willHaveAdminRole) {
+                $this->error('Acceso Denegado', 'No se permite agregar o quitar el rol de administrador', position: 'toast-top toast-end');
                 return;
             }
 
@@ -218,14 +266,18 @@ class Users extends Component
     public function delete($userId)
     {
         $user = User::findOrFail($userId);
-
         $this->authorize('users.delete', $user);
-        if ($user) {
-            // Cambiar el estado en lugar de eliminar
-            $user->update(['is_active' => 0]);
-            $this->loadUsers();
-            $this->warning('Usuario desactivado', 'El usuario ha sido desactivado correctamente', position: 'toast-top toast-end');
+
+        // Prevenir desactivación de usuarios admin
+        if ($user->hasRole('admin')) {
+            $this->error('Acceso Denegado', 'No se permite desactivar usuarios administradores', position: 'toast-top toast-end');
+            return;
         }
+
+        // Cambiar el estado en lugar de eliminar
+        $user->update(['is_active' => 0]);
+        $this->loadUsers();
+        $this->warning('Usuario desactivado', 'El usuario ha sido desactivado correctamente', position: 'toast-top toast-end');
     }
 
     public function activate($userId)
