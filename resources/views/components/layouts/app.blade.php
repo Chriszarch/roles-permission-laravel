@@ -69,6 +69,9 @@
                         </x-slot:actions>
                     </x-list-item>
 
+                    {{-- Role Selector --}}
+                    <livewire:role-selector />
+
                     <x-menu-separator />
                 @endif
 

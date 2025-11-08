@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Middleware para verificar usuarios activos en todas las rutas web autenticadas
         $middleware->web(append: [
             \App\Http\Middleware\CheckActiveUser::class,
+            \App\Http\Middleware\HandleActiveRole::class,
         ]);
     })->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
