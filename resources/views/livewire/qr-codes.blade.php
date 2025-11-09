@@ -1,3 +1,14 @@
+@php
+    $qrOpFilters = [
+            ['id' => 'all', 'name' => 'Todos'],
+            ['id' => 'active', 'name' => 'Activos'],
+    ];
+
+    if (Session::get('active_role') === 'admin') {
+        $qrOpFilters[] = ['id' => 'inactive', 'name' => 'Inactivos'];
+    }
+@endphp
+
 <div>
     {{-- Header --}}
     <div class="mb-6">
@@ -27,11 +38,7 @@
             <div class="flex gap-2">
                 <x-select 
                     wire:model.live="statusFilter" 
-                    :options="[
-                        ['id' => 'all', 'name' => 'Todos'],
-                        ['id' => 'active', 'name' => 'Activos'],
-                        ['id' => 'inactive', 'name' => 'Inactivos']
-                    ]"
+                    :options="$qrOpFilters"
                     option-value="id"
                     option-label="name"
                     class="select-sm min-w-32 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"

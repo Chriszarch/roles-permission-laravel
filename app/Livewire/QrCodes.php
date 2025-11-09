@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\QrCode;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -44,6 +45,11 @@ class QrCodes extends Component
     public function loadQrCodes(): void
     {
         $query = QrCode::query();
+
+        // Solo los admins pueden ver registros inactivos
+        if (Session::get('active_role') !== 'admin') {
+            $query->where('is_active', true);
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -130,8 +136,10 @@ class QrCodes extends Component
         $qrCode = QrCode::findOrFail($qrCodeId);
         $this->authorize('qr.delete', $qrCode);
 
+        // Realizamos un soft delete actualizando is_active a false y luego eliminando
+        $qrCode->update(['is_active' => false]);
         $qrCode->delete();
-        $this->success('Código QR eliminado exitosamente');
+        $this->success('Código QR desactivado exitosamente');
         $this->loadQrCodes();
     }
 
