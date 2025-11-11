@@ -13,8 +13,7 @@
             <x-table :headers="$headers" :rows="$permissions" with-pagination>
                 @can('permissions.edit')
                     @scope('actions', $permission)
-                        <x-button icon="o-pencil" wire:click="openEditModal({{ $permission['original']->id }})" spinner
-                            class="btn-sm" />
+                        <x-button class="btn-sm hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" icon="o-pencil" wire:click="openEditModal({{ $permission['original']->id }})" tooltip="Editar permiso" spinner/>
                     @endscope
                 @endcan
             </x-table>

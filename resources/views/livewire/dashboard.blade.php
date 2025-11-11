@@ -5,12 +5,9 @@
             <p class="text-black">Bienvenido aqui esta la informacion más relevante de tu negocio</p>
         </div>
         <div class="flex gap-2">
-            <x-button icon="o-arrow-path" class="btn-ghost btn-sm" wire:click="$refresh">
-                Actualizar
-            </x-button>
             <x-dropdown>
                 <x-slot:trigger>
-                    <x-button class="btn-primary btn-sm" icon="o-calendar-days">
+                    <x-button class="btn-primary btn-md bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700" icon="o-calendar-days">
                         {{ $this->periods[$selectedPeriod] }}
                     </x-button>
                 </x-slot:trigger>

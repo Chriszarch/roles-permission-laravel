@@ -91,7 +91,7 @@
                 {{-- Solo admin puede ver configuraciones --}}
                 @if (auth()->user()?->hasRole('admin'))
                     <x-menu-sub title="Settings" icon="o-cog-6-tooth">
-                        <x-menu-item title="Roles" icon="o-shield-check" link="/roles" />
+                        <x-menu-item title="Roles" icon="o-user-circle" link="/roles" />
                         <x-menu-item title="Permissions" icon="o-key" link="/permissions" />
                     </x-menu-sub>
                 @endif

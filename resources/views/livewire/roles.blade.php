@@ -13,12 +13,12 @@
 
                 @scope('cell_status', $role)
                     <x-badge value="{{ $role->is_active ? 'Activo' : 'Inactivo' }}"
-                        class="{{ $role->is_active ? 'badge-primary' : 'badge-soft' }}" />
+                        class="{{ $role->is_active ? 'badge font-semibold text-teal-700 border-teal-400' : 'badge font-semibold text-pink-500 border-rose-300' }}" />
                 @endscope
 
                 @can('roles.edit')
                     @scope('actions', $role)
-                        <x-button icon="o-pencil" wire:click="openEditModal({{ $role->id }})" spinner class="btn-sm" />
+                        <x-button class="btn-sm hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" icon="o-pencil" wire:click="openEditModal({{ $role->id }})" tooltip="Editar rol" spinner />
                     @endscope
                 @endcan
             </x-table>

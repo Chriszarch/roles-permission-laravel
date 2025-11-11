@@ -1,4 +1,4 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-cyan-500 to-teal-400">
     <div class="w-full max-w-md">
         <!-- Card Container -->
         <div class="bg-white rounded-3xl shadow-xl p-8 space-y-8 relative overflow-hidden">
@@ -31,27 +31,12 @@
                 <!-- Remember Me & Forgot Password -->
                 <div class="flex items-center justify-between">
                     <x-checkbox label="Recordarme" wire:model="remember" class="text-primary-600" />
-                    <div class="text-sm">
-                        <a href="#" class="font-medium text-primary-600 hover:text-primary-500 transition-colors">
-                            ¿Olvidaste tu contraseña?
-                        </a>
-                    </div>
                 </div>
 
                 <!-- Submit Button -->
-                <x-button type="submit" primary xl class="w-full bg-purple-200 font-semibold shadow-lg shadow-primary-500/20">
+                <x-button type="submit" class="w-full bg-primary font-semibold text-white shadow-lg shadow-primary-500/20">
                     Iniciar sesión
                 </x-button>
-
-                <!-- Sign Up Link -->
-                <div class="text-center">
-                    <p class="text-sm text-gray-600">
-                        ¿No tienes una cuenta?
-                        <a href="#" class="font-medium text-primary-600 hover:text-primary-500 transition-colors">
-                            Regístrate ahora
-                        </a>
-                    </p>
-                </div>
             </form>
         </div>
     </div>

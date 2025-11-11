@@ -11,16 +11,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 #[Title('Usuarios')]
 class Users extends Component
 {
-    use AuthorizesRequests, Toast;
+    use AuthorizesRequests, Toast, WithPagination;
 
     public $headers = [];
 
-    public $users = [];
 
     public $roles = [];
 
@@ -56,12 +56,11 @@ class Users extends Component
     public function mount()
     {
         $this->headers = [
-            ['key' => 'id', 'label' => 'ID'],
-            ['key' => 'name', 'label' => 'Nombre'],
-            ['key' => 'email', 'label' => 'Email'],
-            ['key' => 'is_active', 'label' => 'Estado'],
+            ['key' => 'id', 'label' => 'ID', 'class' => 'w-10'],
+            ['key' => 'name', 'label' => 'Nombre', 'class' => 'w-20'],
+            ['key' => 'email', 'label' => 'Email', 'class' => 'w-20'],
+            ['key' => 'is_active', 'label' => 'Estado', 'class' => 'w-24'],
         ];
-        $this->loadUsers();
         $this->loadRoles();
         $this->loadModulesWithPermissions();
     }
@@ -85,7 +84,13 @@ class Users extends Component
             });
         }
 
-        $this->users = $query->get();
+        return $query->paginate(5)->through(fn($user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'is_active' => $user->is_active,
+            'roles' => $user->roles->pluck('name')->toArray(),
+        ]);
     }
 
     public function loadRoles()
@@ -292,6 +297,7 @@ class Users extends Component
 
     public function render()
     {
-        return view('livewire.users');
+        return view('livewire.users')
+            ->with('users', $this->loadUsers());
     }
 }

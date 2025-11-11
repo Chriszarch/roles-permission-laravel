@@ -9,30 +9,31 @@
     <x-card class="mb-4">
         {{-- Users table --}}
         <div class="overflow-x-auto">
-            <x-table :headers="$headers" :rows="$users" striped>
+            <x-table :headers="$headers" :rows="$users" with-pagination>
+                
                 @scope('cell_is_active', $user)
-                    @if ($user->is_active)
-                        <x-badge value="Activo" class="badge-success" />
+                    @if ($user['is_active'])
+                        <x-badge value="Activo" class="badge font-semibold text-teal-700 border-teal-400" />
                     @else
-                        <x-badge value="Inactivo" class="badge-error" />
+                        <x-badge value="Inactivo" class="badge font-semibold text-pink-500 border-rose-300" />
                     @endif
                 @endscope
 
                 @scope('actions', $user)
                     <div class="flex gap-2">
                         @can('users.edit')
-                            <x-button class="btn-sm btn-primary" icon="o-pencil" wire:click="edit({{ $user->id }})" spinner
+                            <x-button class="btn-sm hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300" icon="o-pencil" wire:click="edit({{ $user['id'] }})" spinner
                                 tooltip="Editar usuario" />
                         @endcan
 
-                        @if ($user->is_active)
+                        @if ($user['is_active'])
                             @can('users.delete')
-                                <x-button class="btn-sm btn-error" icon="o-x-mark" wire:click="delete({{ $user->id }})" spinner
+                                <x-button class="btn-sm bg-pink-50 text-pink-400 border-rose-200" icon="o-x-mark" wire:click="delete({{ $user['id'] }})" spinner
                                     tooltip="Desactivar usuario" onclick="return confirm('¿Está seguro de desactivar este usuario?')" />
                             @endcan
                         @else
                             @can('users.edit')
-                                <x-button class="btn-sm btn-success" icon="o-check" wire:click="activate({{ $user->id }})" spinner
+                                <x-button class="btn-sm bg-teal-50 text-teal-600 border-teal-300" icon="o-check" wire:click="activate({{ $user['id'] }})" spinner
                                     tooltip="Activar usuario" />
                             @endcan
                         @endif

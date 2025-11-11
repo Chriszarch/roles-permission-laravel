@@ -11,6 +11,7 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 
     /* Paleta de colores personalizada */
+
     --color-primary-50: oklch(0.97 0.01 250);
     --color-primary-100: oklch(0.93 0.03 250);
     --color-primary-200: oklch(0.87 0.06 250);
@@ -70,12 +71,14 @@
     }
 }
 
-
-
 /**
     The lines above are intact.
     The lines below were added by maryUI installer.
 */
+
+:root {
+  --color-primary: #2563eb;
+}
 
 /** daisyUI */
 @plugin "daisyui" {
@@ -101,4 +104,11 @@
 /** Active button **/
 .mary-table-pagination span[aria-current="page"] > span {
     @apply bg-primary text-base-100
+}
+
+.btn-primary {
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, #2563eb, #06b6d4);
+  border-radius: 7px;
+  border-color: transparent !important;
 }

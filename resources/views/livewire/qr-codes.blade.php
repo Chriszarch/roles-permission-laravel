@@ -20,7 +20,7 @@
             <x-button 
                 label="Crear Nuevo QR" 
                 icon="o-plus" 
-                class="btn-primary font-medium shadow-sm bg-primary-600 hover:bg-primary-700 text-white border-primary-600 hover:border-primary-700" 
+                class="btn-primary font-medium" 
                 wire:click="create" 
             />
         </div>
@@ -92,8 +92,6 @@
                                         <x-button icon="o-ellipsis-vertical" class="btn-ghost btn-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" />
                                     </x-slot:trigger>
                                     <x-menu-item title="Editar" icon="o-pencil" wire:click="edit({{ $qrCode->id }})" />
-                                    <x-menu-item title="Descargar QR" icon="o-arrow-down-tray" 
-                                                 link="{{ route('qr.download', $qrCode) }}" />
                                     <x-menu-separator />
                                     <x-menu-item title="Eliminar" icon="o-trash" 
                                                  wire:click="delete({{ $qrCode->id }})" 
@@ -114,11 +112,6 @@
 
                         {{-- Tags y Metadata --}}
                         <div class="flex flex-wrap items-center gap-3 text-xs font-medium">
-                            {{-- Badge de categoría simulado (puedes agregar campo category después) --}}
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/30">
-                                menu
-                            </span>
-                            
                             {{-- Estado --}}
                             @if ($qrCode->is_active)
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800/30 shadow-sm">
@@ -134,7 +127,7 @@
 
                             {{-- Botón de descarga --}}
                             <a href="{{ route('qr.download', $qrCode) }}" 
-                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
                                 <x-icon name="o-arrow-down-tray" class="w-3.5 h-3.5" />
                                 <span>Descargar</span>
                             </a>
@@ -173,7 +166,7 @@
                     <x-button 
                         label="Crear Código QR" 
                         icon="o-plus" 
-                        class="btn-primary font-medium shadow-sm bg-primary-600 hover:bg-primary-700 text-white border-primary-600 hover:border-primary-700" 
+                        class="btn-primary font-medium bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg" 
                         wire:click="create" 
                     />
                 @endif
