@@ -29,7 +29,7 @@
 
 </head>
 
-<body class="min-h-screen font-sans antialiased bg-base-200">
+<body class="min-h-screen lg:max-w-7xl mx-auto font-sans antialiased text-white" style="background-image: url('{{ asset('storage/bg-app.webp') }}')">
 
     {{-- NAVBAR mobile only --}}
     <x-nav sticky class="lg:hidden">
@@ -46,11 +46,11 @@
     {{-- MAIN --}}
     <x-main>
         {{-- SIDEBAR --}}
-        <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 lg:bg-inherit">
+        <x-slot:sidebar drawer="main-drawer" collapsible>
 
             {{-- BRAND --}}
             <div class="flex items-center justify-center -mb-8">
-                <img src="{{ asset('storage/horizontal-logo.webp') }}" alt="Logo"
+                <img src="{{ asset('storage/horizontal-icon-mr-insight.webp') }}" alt="Logo"
                     class="px-5 pt-4 h-14 md:h-32 object-contain">
             </div>
 

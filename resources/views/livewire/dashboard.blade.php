@@ -5,9 +5,9 @@
             <p class="text-black">Bienvenido aqui esta la informacion más relevante de tu negocio</p>
         </div>
         <div class="flex gap-2">
-            <x-dropdown>
+            <x-dropdown class="bg-primary">
                 <x-slot:trigger>
-                    <x-button class="btn-primary btn-md bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700" icon="o-calendar-days">
+                    <x-button class="btn-primary btn-md bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary" icon="o-calendar-days">
                         {{ $this->periods[$selectedPeriod] }}
                     </x-button>
                 </x-slot:trigger>
@@ -16,6 +16,7 @@
                         :title="$label"
                         icon="{{ $selectedPeriod === $value ? 'o-check' : '' }}"
                         wire:click="updatePeriod('{{ $value }}')"
+                        class="text-white hover:bg-secondary"
                     />
                 @endforeach
             </x-dropdown>
@@ -25,17 +26,17 @@
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @foreach ($this->stats as $stat)
-            <x-card class="p-6 hover:shadow-lg transition-shadow">
+            <x-card class="p-6 hover:shadow-lg transition-shadow bg-primary">
                 <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ $stat['title'] }}</p>
-                        <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">{{ $stat['value'] }}</p>
+                    <div class="font-inter text-white">
+                        <p class="text-sm font-medium">{{ $stat['title'] }}</p>
+                        <p class="text-3xl font-bold mt-2">{{ $stat['value'] }}</p>
                         <div class="flex items-center mt-2">
                             <span
                                 class="text-sm font-medium {{ $stat['positive'] ? 'text-green-600' : 'text-red-600' }}">
                                 {{ $stat['change'] }}
                             </span>
-                            <span class="text-sm text-gray-500 ml-1">vs período anterior</span>
+                            <span class="text-sm ml-1">vs período anterior</span>
                         </div>
                     </div>
                     <div class="p-3 {{ $stat['bg'] }} rounded-full">
@@ -49,15 +50,15 @@
     <!-- Charts -->
     <div class="grid w-full gap-6">
         <!-- Scans Chart -->
-        <x-card class="p-6">
+        <x-card class="p-6 bg-primary">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 class="text-lg font-semibold text-white">
                     Histórico de Escaneos
                 </h3>
             </div>
 
             <!-- Chart -->
-            <div class="relative h-[400px] bg-white dark:bg-gray-800 rounded-lg p-4">
+            <div class="relative h-[400px] bg-neutral rounded-lg p-4">
                 @if (count($this->chartData['labels']) > 0)
                     <div class="flex items-end justify-between h-full">
                         @foreach ($this->chartData['labels'] as $index => $label)
@@ -71,7 +72,7 @@
                                 </div>
                                 
                                 {{-- Bar --}}
-                                <div class="bg-gradient-to-t from-blue-500 to-blue-400 hover:from-blue-600 hover:to-blue-500 rounded-t-lg mb-2 transition-all cursor-help"
+                                <div class="bg-gradient-to-t from-primary to-secondary hover:from-primary hover:to-secondary rounded-t-lg mb-2 transition-all cursor-help"
                                     style="height: {{ ($this->chartData['datasets'][0]['data'][$index] / max($this->chartData['datasets'][0]['data'])) * 320 }}px; width: {{ $this->selectedPeriod === 'today' ? '40px' : '24px' }};">
                                 </div>
                                 

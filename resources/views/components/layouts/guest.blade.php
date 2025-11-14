@@ -7,7 +7,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-gray-100">
+<body class="font-display" style="background-image: url('{{ asset('storage/bg-login.jpg') }}')">
     <main>
         {{ $slot }}
     </main>

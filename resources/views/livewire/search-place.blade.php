@@ -5,7 +5,30 @@
   </div>
 
   <!-- Search Card -->
-  <x-card class="p-6 flex flex-col gap-6">
+  <x-card class="p-6 flex flex-col gap-6 bg-neutral text-black">
+    <!-- Instructions Card -->
+  <x-card class="p-6 bg-primary text-white mb-6">
+    <h3 class="font-semibold text-white mb-3">📋 Cómo usar esta herramienta</h3>
+    <ol class="space-y-2 text-sm text-white">
+      <li class="flex gap-2">
+        <span class="font-bold">1.</span>
+        <span>Escribe el nombre del negocio en el campo de búsqueda</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="font-bold">2.</span>
+        <span>Selecciona tu negocio de las sugerencias que aparecen</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="font-bold">3.</span>
+        <span>Da click en el botón "Copiar" y Ualá ya tienes el enlace de reseñas listo</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="font-bold">4.</span>
+        <span>Comparte tu enlace con tus clientes para que dejen reseñas en Google o TripAdvisor</span>
+      </li>
+    </ol>
+  </x-card>
+    <!-- Google Places API -->
     <div class="space-y-4">
       <h2>Google Places API</h2>
       <hr class="border-gray-300 dark:border-gray-600" />
@@ -17,7 +40,7 @@
         <div class="relative">
           <input type="text"
                placeholder="Ej: Restaurante La Cocina, Lima"
-               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+               class="w-full px-4 py-3 bg-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                x-model="query"
                @input.debounce.300ms="onInputChanged()"
                @focus="if(suggestions.length > 0) showSuggestions = true"
@@ -133,7 +156,7 @@
         <div class="relative">
           <input type="text"
                placeholder="Ej: Hotel La Paz"
-               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+               class="w-full px-4 py-3 border bg-white border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                wire:model.live.debounce.300ms="tripAdvisorQuery"
                autocomplete="off">
           
@@ -240,29 +263,6 @@
 
               </div>
     
-  </x-card>
-
-  <!-- Instructions Card -->
-  <x-card class="p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-    <h3 class="font-semibold text-blue-900 dark:text-blue-100 mb-3">📋 Cómo usar esta herramienta</h3>
-    <ol class="space-y-2 text-sm text-blue-800 dark:text-blue-200">
-      <li class="flex gap-2">
-        <span class="font-bold">1.</span>
-        <span>Escribe el nombre del negocio en el campo de búsqueda</span>
-      </li>
-      <li class="flex gap-2">
-        <span class="font-bold">2.</span>
-        <span>Selecciona tu negocio de las sugerencias que aparecen</span>
-      </li>
-      <li class="flex gap-2">
-        <span class="font-bold">3.</span>
-        <span>Da click en el botón "Copiar" y Ualá ya tienes el enlace de reseñas listo</span>
-      </li>
-      <li class="flex gap-2">
-        <span class="font-bold">4.</span>
-        <span>Comparte tu enlace con tus clientes para que dejen reseñas en Google o TripAdvisor</span>
-      </li>
-    </ol>
   </x-card>
 </div>
 

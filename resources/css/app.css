@@ -1,56 +1,57 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/Inter_24pt-Regular.woff2") format("woff2");
+    font-weight: 100 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../fonts/Inter_24pt-Bold.ttf") format("truetype");
+    font-weight: 500 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "EB Garamond";
+    src: url("../fonts/EBGaramond-Regular.woff2") format("woff2");
+    font-weight: 100 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
 @theme {
     /* Fuentes */
-    --font-sans: 'Inter', 'Geist Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: "Inter";
+    --font-title: "EB Garamond";
 
-    /* Paleta de colores personalizada */
-
-    --color-primary-50: oklch(0.97 0.01 250);
-    --color-primary-100: oklch(0.93 0.03 250);
-    --color-primary-200: oklch(0.87 0.06 250);
-    --color-primary-300: oklch(0.78 0.11 250);
-    --color-primary-400: oklch(0.68 0.16 250);
-    --color-primary-500: oklch(0.58 0.20 250);
-    --color-primary-600: oklch(0.50 0.22 250);
-    --color-primary-700: oklch(0.42 0.19 250);
-    --color-primary-800: oklch(0.35 0.15 250);
-    --color-primary-900: oklch(0.30 0.11 250);
-    --color-primary-950: oklch(0.20 0.07 250);
-
-    /* Colores de acento */
-    --color-accent-50: oklch(0.97 0.01 200);
-    --color-accent-100: oklch(0.94 0.03 200);
-    --color-accent-200: oklch(0.89 0.06 200);
-    --color-accent-300: oklch(0.81 0.10 200);
-    --color-accent-400: oklch(0.70 0.14 200);
-    --color-accent-500: oklch(0.60 0.17 200);
-    --color-accent-600: oklch(0.52 0.18 200);
-    --color-accent-700: oklch(0.44 0.16 200);
-    --color-accent-800: oklch(0.37 0.13 200);
-    --color-accent-900: oklch(0.32 0.10 200);
-    --color-accent-950: oklch(0.22 0.06 200);
+    /* Breakpoints */
+    --breakpoint-xs: 350px;
 }
 
 @layer base {
     /* Importar fuentes desde Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+    * {
+        @apply font-display;
+    }
+
     /* Estilos base personalizados */
     body {
         @apply antialiased;
-        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-    }
-
-    /* Mejoras tipográficas */
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-semibold tracking-tight;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     }
 
     /* Personalización de scrollbar para navegadores webkit */
@@ -76,20 +77,76 @@
     The lines below were added by maryUI installer.
 */
 
-:root {
-  --color-primary: #2563eb;
-}
-
 /** daisyUI */
 @plugin "daisyui" {
-    themes: light --default, dark --prefersdark;
+    themes: mr-insight --default;
 }
+
+@plugin "daisyui/theme" {
+  name: "mr-insight";
+  default: true;
+  prefers-dark: true;
+  color-scheme: dark;
+
+  /* === BASE (fondo) === */
+  --color-base-100: oklch(0% 0.02 260); /* fondo principal */
+  --color-base-200: oklch(26% 0.02 260);
+  /* --color-base-200: oklch(53% 0.1735 26.33); */
+  --color-base-300: oklch(26% 0.02 260);
+  --color-base-content: oklch(95% 0.01 260); /* texto principal */
+
+  /* === PRIMARY (tú ya tenías este rojo) === */
+  --color-primary: #af2626;
+  --color-primary-content: oklch(98% 0.01 30);
+
+  /* === SECONDARY (tú ya tenías este oscuro) === */
+  --color-secondary: #0f0f0f;
+  --color-secondary-content: oklch(45% 0.01 260);
+
+  /* === ACCENT (tu verde #7dd33c) === */
+  --color-accent: oklch(75% 0.18 140); /* generado desde #7dd33c */
+  --color-accent-content: oklch(15% 0.03 140);
+
+  /* === NEUTRAL (tú definiste este arena claro) === */
+  --color-neutral: #f5f4f0;
+  --color-neutral-content: #0f0f0f;
+
+  /* === SUCCESS (derivado del verde pero más equilibrado) === */
+  --color-success: oklch(70% 0.15 150);
+  --color-success-content: oklch(15% 0.03 150);
+
+  /* === WARNING (tono cálido equilibrado) === */
+  --color-warning: oklch(75% 0.18 80);
+  --color-warning-content: oklch(25% 0.05 80);
+
+  /* === ERROR (derivado del primary, pero más visible) === */
+  --color-error: oklch(52% 0.25 30);
+  --color-error-content: oklch(98% 0.01 30);
+
+  /* === RADIUS === */
+  --radius-selector: 1rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+
+  /* === SIZES === */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* === BORDER === */
+  --border: 1px;
+
+  /* === EFFECTS === */
+  --depth: 1;
+  --noise: 0;
+
+  /* === FONT === */
+  --font-display: "Inter";
+  --font-title: "EB Garamond";
+}
+
 
 /* maryUI */
 @source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
-
-/* Theme toggle */
-@custom-variant dark (&:where(.dark, .dark *));
 
 /**
 * Paginator - Traditional style
@@ -98,17 +155,42 @@
 
 /** General button **/
 .mary-table-pagination button {
-    @apply cursor-pointer
+    @apply cursor-pointer;
 }
- 
+
 /** Active button **/
 .mary-table-pagination span[aria-current="page"] > span {
-    @apply bg-primary text-base-100
+    @apply bg-primary text-base-100;
+}
+
+.table > tbody > tr:hover {
+    @apply text-white;
 }
 
 .btn-primary {
-  background-color: transparent !important;
-  background-image: linear-gradient(to right, #2563eb, #06b6d4);
-  border-radius: 7px;
-  border-color: transparent !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(
+        to right,
+        var(--color-primary),
+        var(--color-secondary)
+    );
+    border-radius: 7px;
+    border-color: transparent !important;
+}
+
+.dropdown > ul {
+    @apply bg-primary;
+}
+
+/* Ensure the background covers the entire viewport */
+.min-h-screen {
+    min-height: 100vh;
+}
+
+/* Style for the background image */
+body {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }

@@ -1,12 +1,12 @@
 <div>
     <div class="w-full flex justify-between">
-        <p class="text-gray-600 dark:text-gray-400 mt-1">Administra los roles del sistema</p>
+        <p class="text-white mt-1">Administra los roles del sistema</p>
         @can('roles.create')
             <x-button label="Agregar Rol" icon="o-plus" wire:click="openCreateModal" class="mb-4 btn-primary" />
         @endcan
     </div>
 
-    <x-card class="mb-4">
+    <x-card class="mb-4 bg-neutral text-black">
         {{-- Roles table --}}
         <div class="overflow-x-auto">
             <x-table :headers="$headers" :rows="$roles" with-pagination>

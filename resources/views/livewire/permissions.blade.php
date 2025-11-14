@@ -1,13 +1,13 @@
 <div>
     <div class="w-full flex justify-between">
-        <p class="text-gray-600 dark:text-gray-400 mt-1">Administra los permisos del sistema</p>
+        <p class="text-white mt-1">Administra los permisos del sistema</p>
 
         @can('permissions.create')
             <x-button label="Agregar Permiso" icon="o-plus" wire:click="openCreateModal" class="mb-4 btn-primary" />
         @endcan
     </div>
 
-    <x-card class="mb-4">
+    <x-card class="mb-4 bg-neutral text-black">
         {{-- Permissions table --}}
         <div class="overflow-x-auto">
             <x-table :headers="$headers" :rows="$permissions" with-pagination>

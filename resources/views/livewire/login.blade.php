@@ -1,7 +1,7 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-cyan-500 to-teal-400">
+<div class="min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md">
         <!-- Card Container -->
-        <div class="bg-white rounded-3xl shadow-xl p-8 space-y-8 relative overflow-hidden">
+        <div class="bg-neutral rounded-3xl shadow-xl p-8 space-y-8 relative overflow-hidden">
             <!-- Decorative elements -->
             <div
                 class="absolute inset-0 bg-grid-slate-100 opacity-[0.04] [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]">
@@ -11,11 +11,11 @@
 
             <!-- Logo/Brand -->
             <div class="text-center space-y-2 relative">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-lg mb-4 ring-4 ring-gray-100">
-                    <img src="{{ asset('storage/logo-base.png') }}" alt="Logo" class="w-12 h-12">
+                <div class="inline-flex items-center justify-center w-24 h-24">
+                    <img src="{{ asset('storage/vertical-icon-mr-insight.webp') }}" alt="Logo" class="w-20 h-20">
                 </div>
-                <h2 class="text-2xl font-bold tracking-tight text-gray-900">Bienvenido de nuevo</h2>
-                <p class="text-gray-600 text-sm">Inicia sesión para acceder a tu cuenta</p>
+                <h2 class="text-3xl font-bold tracking-tight text-primary">Bienvenido de nuevo</h2>
+                <p class="text-black font-semibold font-title text-lg">Inicia sesión para acceder a tu cuenta</p>
             </div>
 
             <!-- Login Form -->
@@ -34,7 +34,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <x-button type="submit" class="w-full bg-primary font-semibold text-white shadow-lg shadow-primary-500/20">
+                <x-button type="submit" class="w-full rounded-full bg-secondary font-semibold text-white shadow-lg shadow-secondary-500/20">
                     Iniciar sesión
                 </x-button>
             </form>

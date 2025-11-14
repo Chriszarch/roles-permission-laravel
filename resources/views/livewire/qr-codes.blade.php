@@ -14,8 +14,7 @@
     <div class="mb-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Mis Códigos QR</h1>
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">Gestiona todos tus códigos QR dinámicos</p>
+                <p class="text-md font-medium text-white mt-1">Gestiona todos tus códigos QR dinámicos</p>
             </div>
             <x-button 
                 label="Crear Nuevo QR" 
@@ -26,7 +25,7 @@
         </div>
 
         {{-- Buscador y Filtros --}}
-        <div class="flex flex-col sm:flex-row gap-3">
+        <div class="flex flex-col sm:flex-row gap-3 text-black">
             <div class="flex-1">
                 <x-input 
                     wire:model.live.debounce.300ms="search" 
@@ -62,13 +61,13 @@
     {{-- QR Codes List --}}
     <div class="space-y-4">
         @forelse ($qrCodes as $qrCode)
-        <div class="card bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200">
+        <div class="card bg-neutral text-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200">
             <div class="card-body p-6">
                 <div class="flex items-start gap-6">
                     {{-- QR Preview Icon --}}
                     <div class="flex-shrink-0">
-                        <div class="w-20 h-20 bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/30 dark:to-primary-800/20 rounded-xl flex items-center justify-center ring-1 ring-primary-200 dark:ring-primary-700/50 shadow-sm">
-                            <x-icon name="o-qr-code" class="w-10 h-10 text-primary-600 dark:text-primary-400" />
+                        <div class="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center ring-1 ring-secondary-200 shadow-sm">
+                            <x-icon name="o-qr-code" class="w-10 h-10 text-white" />
                         </div>
                     </div>
 
@@ -127,7 +126,7 @@
 
                             {{-- Botón de descarga --}}
                             <a href="{{ route('qr.download', $qrCode) }}" 
-                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-white bg-gradient-to-r from-primary to-secondary hover:from-primary-600 hover:to-secondary-600">
                                 <x-icon name="o-arrow-down-tray" class="w-3.5 h-3.5" />
                                 <span>Descargar</span>
                             </a>
